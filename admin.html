@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthHub UA - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <nav class="bg-gray-800 p-4 text-white shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">HealthHub UA | Staff Portal</h1>
+            <a href="index.html" class="bg-blue-500 text-xs px-3 py-1 rounded hover:bg-blue-600">Back to Booking</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white p-4 rounded shadow border-l-4 border-blue-500">
+                <h3 class="text-gray-500 text-xs uppercase">Pending</h3>
+                <p class="text-2xl font-bold" id="pendingCount">0</p>
+            </div>
+            <div class="bg-white p-4 rounded shadow border-l-4 border-green-500">
+                <h3 class="text-gray-500 text-xs uppercase">Total Visits</h3>
+                <p class="text-2xl font-bold" id="totalCount">0</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="p-4 border-b">
+                <h2 class="text-lg font-bold text-gray-800">Patient Queue</h2>
+                <p class="text-xs text-gray-500">Real-time appointment requests</p>
+            </div>
+            
+            <div id="appointmentList" class="divide-y divide-gray-200">
+                <div class="p-4 text-center text-gray-500">Loading records...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Specific init for Admin Page
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
+</body>
+</html>
