@@ -11,7 +11,7 @@
     <nav class="bg-blue-600 p-4 shadow-lg text-white">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold">HealthHub UA 🏥</h1>
-            <a href="admin.html" class="text-sm underline opacity-80 hover:opacity-100">Go to Staff Admin</a>
+            <a href="login.html" class="text-sm underline ...">Go to Staff Admin</a>
         </div>
     </nav>
 
@@ -59,7 +59,33 @@
             <p>Developed by: D. Mark Xedrick, C. Angelie May, D. Niel Benedic, S. Charles Justin</p>
         </footer>
     </div>
+    <div id="successModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center transition-opacity duration-300">
+    <div class="relative bg-white rounded-lg shadow-xl max-w-sm w-full mx-4 border border-gray-200">
+        
+        <div class="bg-blue-600 p-4 rounded-t-lg">
+            <h3 class="text-lg leading-6 font-medium text-white flex items-center gap-2">
+                ✅ Success
+            </h3>
+        </div>
 
-    <script src="app.js"></script>
+        <div class="p-6">
+            <p class="text-sm text-gray-500">Appointment Confirmed for:</p>
+            <p class="text-lg font-bold text-gray-800 mt-1" id="modalStudentName">Student Name</p>
+            
+            <div class="mt-4 bg-gray-100 p-3 rounded border border-gray-200">
+                <p class="text-xs text-gray-500 uppercase tracking-wide">Reference ID</p>
+                <p class="font-mono text-blue-600 font-bold" id="modalRefId">#000000</p>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
+            <button onclick="closeModal()" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                OK
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>

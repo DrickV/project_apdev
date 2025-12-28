@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthHub UA - Admin Sign Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-800 h-screen flex items-center justify-center">
+
+    <div class="bg-white p-8 rounded-lg shadow-2xl w-96">
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Create Staff Account</h2>
+        
+        <form id="signupForm" class="space-y-4">
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">New Username</label>
+                <input type="text" id="newUser" required class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+            </div>
+            
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                <input type="password" id="newPass" required class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Confirm Password</label>
+                <input type="password" id="confirmPass" required class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <p id="msg" class="text-center text-sm font-bold hidden"></p>
+
+            <button type="submit" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition">
+                Register
+            </button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a href="login.html" class="text-xs text-blue-500 hover:underline">Already have an account? Login here</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const user = document.getElementById('newUser').value;
+            const pass = document.getElementById('newPass').value;
+            const confirm = document.getElementById('confirmPass').value;
+            const msg = document.getElementById('msg');
+
+            // 1. Validation: Do passwords match?
+            if (pass !== confirm) {
+                showError("Passwords do not match!");
+                return;
+            }
+
+            // 2. Validation: Is password strong enough?
+            if (pass.length < 4) {
+                showError("Password must be at least 4 characters.");
+                return;
+            }
+
+            // 3. Save to LocalStorage (The "Database")
+            // We get the existing list of users or create an empty one
+            const users = JSON.parse(localStorage.getItem('healthhub_users')) || [];
+            
+            // Check if user already exists
+            if (users.find(u => u.username === user)) {
+                showError("Username already taken.");
+                return;
+            }
+
+            // Add new user
+            users.push({ username: user, password: pass });
+            localStorage.setItem('healthhub_users', JSON.stringify(users));
+
+            // Success Message
+            msg.textContent = "Account Created! Redirecting...";
+            msg.className = "text-center text-sm font-bold text-green-600 block";
+            
+            // Redirect to login after 1.5 seconds
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        });
+
+        function showError(text) {
+            const msg = document.getElementById('msg');
+            msg.textContent = text;
+            msg.className = "text-center text-sm font-bold text-red-500 block";
+        }
+    </script>
+</body>
+</html>
