@@ -6,86 +6,108 @@
     <title>HealthHub UA - Student Booking</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-blue-50 font-sans leading-normal tracking-normal">
+<body class="bg-gray-50 font-sans leading-normal tracking-normal">
 
-    <nav class="bg-blue-600 p-4 shadow-lg text-white">
+    <nav class="bg-blue-900 p-4 shadow-xl border-b-4 border-yellow-400">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">HealthHub UA 🏥</h1>
-            <a href="login.html" class="text-sm underline ...">Go to Staff Admin</a>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-blue-900 font-bold text-xs">UA</div>
+                <h1 class="text-xl font-bold text-white tracking-wide">
+                    HealthHub <span class="text-yellow-400">UA</span>
+                </h1>
+            </div>
+            <a href="login.html" class="text-sm text-yellow-400 font-semibold hover:text-white transition">Staff Login →</a>
         </div>
     </nav>
 
     <div class="container mx-auto px-4 py-8 max-w-lg">
         
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">Book Appointment</h2>
-            <p class="text-gray-600 mb-6 text-sm">Digitizing school clinic operations [cite: 8]</p>
+        <div class="bg-white rounded-lg shadow-2xl p-6 border-t-8 border-blue-900">
+            <h2 class="text-2xl font-bold text-blue-900 mb-1">Book Appointment</h2>
+            <p class="text-gray-500 mb-6 text-sm">University of Antique School Clinic</p>
 
             <form id="bookingForm" class="space-y-4">
                 <div>
                     <label class="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
                     <input type="text" id="studentName" required 
-                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Ex: Kylie Maven Jenner">
+                           class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900"
+                           placeholder="Ex: Juan Dela Cruz">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 text-sm font-bold mb-2">Student ID</label>
                     <input type="text" id="studentId" required 
-                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900"
+                           placeholder="Ex: 2023-1234-A"
+                           title="Format: YYYY-NNNN-Batch (e.g. 2023-1234-A)">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">College / Department</label>
+                    <div class="relative">
+                        <select id="studentDept" required 
+                                class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-blue-900 focus:ring-1 focus:ring-blue-900">
+                            <option value="" disabled selected>Select your Department</option>
+                            <option value="CAS">College of Arts & Sciences (CAS)</option>
+                            <option value="CIT">College of Industrial Technology (CIT)</option>
+                            <option value="CCIS">College of Computing and Information Studies (CCIS)</option>
+                            <option value="CMG">College of Management & Governance (CMG)</option>
+                            <option value="CEA">College of Engineering & Architecture (CEA)</option>
+                            <option value="CTE">College of Teacher Education (CTE)</option>
+                            <option value="CMS">College of Maritime Studies (CMS)</option>
+                            <option value="CCJE">College of Criminal Justice (CCJE)</option>
+                            <option value="LHS">Library High School (LHS)</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
                 </div>
 
                 <div>
                     <label class="block text-gray-700 text-sm font-bold mb-2">Symptoms / Reason</label>
                     <textarea id="symptoms" required rows="3"
-                              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900"
                               placeholder="Fever, headache, injury..."></textarea>
                 </div>
 
                 <div>
                     <label class="block text-gray-700 text-sm font-bold mb-2">Preferred Date</label>
                     <input type="date" id="visitDate" required 
-                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900">
                 </div>
 
                 <button type="submit" 
-                        class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+                        class="w-full bg-blue-900 text-white font-bold py-3 px-4 rounded shadow-lg hover:bg-blue-800 transition duration-300 flex justify-center items-center gap-2">
                     Submit Request
                 </button>
             </form>
         </div>
 
         <footer class="mt-8 text-center text-gray-500 text-xs">
-            <p>Developed by: D. Mark Xedrick, C. Angelie May, D. Niel Benedic, S. Charles Justin</p>
+            <p>© 2025 HealthHub UA. All Rights Reserved.</p>
         </footer>
     </div>
-    <div id="successModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center transition-opacity duration-300">
-    <div class="relative bg-white rounded-lg shadow-xl max-w-sm w-full mx-4 border border-gray-200">
-        
-        <div class="bg-blue-600 p-4 rounded-t-lg">
-            <h3 class="text-lg leading-6 font-medium text-white flex items-center gap-2">
-                ✅ Success
-            </h3>
-        </div>
 
-        <div class="p-6">
-            <p class="text-sm text-gray-500">Appointment Confirmed for:</p>
-            <p class="text-lg font-bold text-gray-800 mt-1" id="modalStudentName">Student Name</p>
-            
-            <div class="mt-4 bg-gray-100 p-3 rounded border border-gray-200">
-                <p class="text-xs text-gray-500 uppercase tracking-wide">Reference ID</p>
-                <p class="font-mono text-blue-600 font-bold" id="modalRefId">#000000</p>
+    <div id="successModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+        <div class="relative bg-white rounded-lg shadow-xl max-w-sm w-full mx-4 border-t-4 border-yellow-400">
+            <div class="bg-blue-900 p-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">✅ Success</h3>
+            </div>
+            <div class="p-6">
+                <p class="text-sm text-gray-500">Appointment Confirmed for:</p>
+                <p class="text-lg font-bold text-blue-900 mt-1" id="modalStudentName">Student Name</p>
+                <div class="mt-4 bg-gray-100 p-3 rounded border border-gray-200">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide">Reference ID</p>
+                    <p class="font-mono text-blue-900 font-bold" id="modalRefId">#000000</p>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse">
+                <button onclick="closeModal()" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-900 text-white font-medium hover:bg-blue-800 sm:w-auto sm:text-sm">OK</button>
             </div>
         </div>
-
-        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
-            <button onclick="closeModal()" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                OK
-            </button>
-        </div>
     </div>
-</div>
 
-<script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HealthHub UA - Admin Dashboard</title>
     <script>
-    // SECURITY CHECK
-    // If the user hasn't logged in, kick them back to the login page.
+        // Security Check
         if (!sessionStorage.getItem('isLoggedIn')) {
             window.location.href = 'login.html';
         }
@@ -15,51 +14,78 @@
 </head>
 <body class="bg-gray-100 font-sans">
 
-    <nav class="bg-gray-800 p-4 text-white shadow-lg">
+    <nav class="bg-blue-900 p-4 text-white shadow-lg border-b-4 border-yellow-400 relative z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">HealthHub UA | Staff Portal</h1>
-            <a href="index.html" class="bg-blue-500 text-xs px-3 py-1 rounded hover:bg-blue-600">Back to Booking</a>
+            <div class="flex items-center gap-2">
+                 <div class="w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-blue-900 font-bold text-[10px]">UA</div>
+                <h1 class="text-xl font-bold tracking-wide">Staff Portal</h1>
+            </div>
+            <a href="index.html" class="bg-yellow-400 text-blue-900 text-xs font-bold px-3 py-1 rounded hover:bg-yellow-300 transition cursor-pointer">
+                Back to Booking
+            </a>
         </div>
     </nav>
 
     <div class="container mx-auto px-4 py-8">
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-4 rounded shadow border-l-4 border-blue-500">
-                <h3 class="text-gray-500 text-xs uppercase">Pending</h3>
-                <p class="text-2xl font-bold" id="pendingCount">0</p>
+            <div class="bg-white p-4 rounded shadow border-l-4 border-blue-900">
+                <h3 class="text-gray-500 text-xs uppercase font-bold">Pending Requests</h3>
+                <p class="text-3xl font-bold text-blue-900" id="pendingCount">0</p>
             </div>
-            <div class="bg-white p-4 rounded shadow border-l-4 border-green-500">
-                <h3 class="text-gray-500 text-xs uppercase">Total Visits</h3>
-                <p class="text-2xl font-bold" id="totalCount">0</p>
+            <div class="bg-white p-4 rounded shadow border-l-4 border-yellow-400">
+                <h3 class="text-gray-500 text-xs uppercase font-bold">Total Visits</h3>
+                <p class="text-3xl font-bold text-gray-800" id="totalCount">0</p>
             </div>
         </div>
 
-        <div class="flex space-x-2 mb-4">
-            <button onclick="switchTab('queue')" id="tabQueue" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold shadow transition">
-                Active Queue
-            </button>
-            <button onclick="switchTab('history')" id="tabHistory" class="px-4 py-2 bg-white text-gray-600 rounded-lg font-bold shadow hover:bg-gray-50 transition">
-                History Log
-            </button>
+        <div class="flex flex-col md:flex-row justify-between items-end mb-0 gap-4">
+            
+            <div class="flex space-x-2">
+                <button onclick="switchTab('queue')" id="tabQueue" class="px-4 py-2 bg-blue-900 text-white rounded-t-lg font-bold shadow border-b-2 border-blue-900 transition">
+                    Active Queue
+                </button>
+                <button onclick="switchTab('history')" id="tabHistory" class="px-4 py-2 bg-white text-gray-600 rounded-t-lg font-bold shadow hover:bg-gray-50 border-b-2 border-transparent transition">
+                    History Log
+                </button>
+                <button onclick="switchTab('analytics')" id="tabAnalytics" class="px-4 py-2 bg-white text-gray-600 rounded-t-lg font-bold shadow hover:bg-gray-50 border-b-2 border-transparent transition">
+                    Analytics
+                </button>
+            </div>
+
+            <div class="flex gap-2 w-full md:w-auto mb-2">
+                <input type="text" id="searchInput" onkeyup="filterHistory()" placeholder="Search History..." 
+                    class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm shadow-sm w-full md:w-64">
+                
+                <button onclick="exportToCSV()" class="bg-green-600 text-white text-sm font-bold px-4 py-2 rounded shadow hover:bg-green-700 flex items-center gap-2 transition whitespace-nowrap">
+                    📥 Export
+                </button>
+            </div>
         </div>
 
-        <div id="queueSection" class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="p-4 border-b bg-blue-50">
-                <h2 class="text-lg font-bold text-gray-800">Patient Queue</h2>
+        <div id="queueSection" class="bg-white rounded-b-lg rounded-tr-lg shadow-lg overflow-hidden border-t-2 border-blue-900">
+            <div class="p-4 border-b bg-gray-50">
+                <h2 class="text-lg font-bold text-blue-900">Patient Queue</h2>
                 <p class="text-xs text-gray-500">Real-time appointment requests</p>
             </div>
             <div id="appointmentList" class="divide-y divide-gray-200">
                 </div>
         </div>
 
-        <div id="historySection" class="hidden bg-white rounded-lg shadow overflow-hidden">
+        <div id="historySection" class="hidden bg-white rounded-b-lg rounded-tr-lg shadow-lg overflow-hidden border-t-2 border-gray-300">
             <div class="p-4 border-b bg-gray-50">
-                <h2 class="text-lg font-bold text-gray-800">Visit History</h2>
+                <h2 class="text-lg font-bold text-gray-700">Visit History</h2>
                 <p class="text-xs text-gray-500">All completed appointments</p>
             </div>
             <div id="historyList" class="divide-y divide-gray-200">
                 </div>
+        </div>
+
+        <div id="analyticsSection" class="hidden bg-white rounded-b-lg rounded-tr-lg shadow-lg overflow-hidden border-t-2 border-gray-300 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Health Trends Analysis</h2>
+            <div id="analyticsContainer" class="space-y-4">
+                <p class="text-gray-500 text-sm">Loading data...</p>
+            </div>
         </div>
 
     </div>
