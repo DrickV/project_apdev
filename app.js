@@ -10,7 +10,6 @@ function handleBooking(event) {
     const studentId = document.getElementById('studentId').value;
     const symptoms = document.getElementById('symptoms').value;
     const visitDate = document.getElementById('visitDate').value;
-    // NEW: Get Department Value
     const studentDept = document.getElementById('studentDept').value;
 
     // 1. ID FORMAT VALIDATION
@@ -36,7 +35,7 @@ function handleBooking(event) {
         id: Date.now(),
         name: studentName,
         studentId: studentId.toUpperCase(),
-        department: studentDept, // <--- NEW: Saved here
+        department: studentDept, 
         symptoms: symptoms,
         date: visitDate,
         status: 'Pending',
@@ -56,6 +55,34 @@ function handleBooking(event) {
 
 // --- ADMIN SIDE: DASHBOARD ---
 
+// 1. Updated Mark as Done (With Notes)
+function markAsDone(id) {
+    const diagnosis = prompt("Enter Diagnosis / Treatment Given:\n(e.g., Given Paracetamol, Rested for 1hr)");
+    
+    if (diagnosis === null) return; // Cancelled
+    if (diagnosis.trim() === "") {
+        alert("You must enter a diagnosis/note to complete the visit.");
+        return;
+    }
+
+    const appointments = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    
+    const updatedAppointments = appointments.map(appt => {
+        if (appt.id === id) { 
+            return { 
+                ...appt, 
+                status: 'Completed', 
+                notes: diagnosis 
+            }; 
+        }
+        return appt;
+    });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedAppointments));
+    loadDashboard(); 
+}
+
+// 2. Main Dashboard Loader
 function loadDashboard() {
     const queueContainer = document.getElementById('appointmentList');
     const historyContainer = document.getElementById('historyList');
@@ -70,7 +97,7 @@ function loadDashboard() {
     document.getElementById('totalCount').textContent = appointments.length;
     document.getElementById('pendingCount').textContent = pendingApps.length;
 
-    // 1. Render Active Queue
+    // Render Active Queue
     queueContainer.innerHTML = '';
     if (pendingApps.length === 0) {
         queueContainer.innerHTML = '<div class="p-4 text-center text-gray-400">No pending appointments.</div>';
@@ -79,7 +106,6 @@ function loadDashboard() {
             const item = document.createElement('div');
             item.className = "p-4 hover:bg-blue-50 flex flex-col md:flex-row justify-between items-start md:items-center transition duration-150 border-b border-gray-100";
             
-            // Updated HTML to show Department badge
             item.innerHTML = `
                 <div class="mb-2 md:mb-0">
                     <div class="flex items-center gap-2">
@@ -102,116 +128,13 @@ function loadDashboard() {
         });
     }
 
-    // 2. Render History
+    // Render History
     historyContainer.innerHTML = '';
     if (completedApps.length === 0) {
         historyContainer.innerHTML = '<div class="p-4 text-center text-gray-400">No history available.</div>';
     } else {
         completedApps.reverse().forEach(appt => {
             const item = document.createElement('div');
-            item.className = "p-4 bg-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center opacity-75 border-b border-gray-100";
-            item.innerHTML = `
-                <div class="mb-2 md:mb-0">
-                    <p class="font-bold text-gray-600">${appt.name} <span class="text-xs text-gray-400">(${appt.studentId})</span></p>
-                    <p class="text-xs text-gray-500 mb-1">Dept: ${appt.department || 'N/A'}</p>
-                    <p class="text-sm text-gray-500">${appt.symptoms}</p>
-                    <p class="text-xs text-gray-400">Completed: ${new Date().toLocaleDateString()}</p>
-                </div>
-                <div>
-                    <span class="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded border border-green-200">
-                        COMPLETED
-                    </span>
-                </div>
-            `;
-            historyContainer.appendChild(item);
-        });
-    }
-}
-
-// --- SHARED FUNCTIONS ---
-
-// --- UPDATED: Add Diagnosis Notes ---
-function markAsDone(id) {
-    // 1. Ask the Nurse for notes (Simple Prompt)
-    const diagnosis = prompt("Enter Diagnosis / Treatment Given:\n(e.g., Given Paracetamol, Rested for 1hr)");
-    
-    if (diagnosis === null) return; // Cancelled
-    if (diagnosis.trim() === "") {
-        alert("You must enter a diagnosis/note to complete the visit.");
-        return;
-    }
-
-    const appointments = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    
-    // 2. Update status AND save the note
-    const updatedAppointments = appointments.map(appt => {
-        if (appt.id === id) { 
-            return { 
-                ...appt, 
-                status: 'Completed', 
-                notes: diagnosis // <--- NEW: Saved here
-            }; 
-        }
-        return appt;
-    });
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedAppointments));
-    loadDashboard(); 
-}
-
-// --- UPDATED: Show Notes in History ---
-function loadDashboard() {
-    const queueContainer = document.getElementById('appointmentList');
-    const historyContainer = document.getElementById('historyList');
-    
-    if (!queueContainer) return; 
-
-    const appointments = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    
-    const pendingApps = appointments.filter(a => a.status === 'Pending');
-    const completedApps = appointments.filter(a => a.status === 'Completed');
-
-    document.getElementById('totalCount').textContent = appointments.length;
-    document.getElementById('pendingCount').textContent = pendingApps.length;
-
-    // Render Queue (Same as before)
-    queueContainer.innerHTML = '';
-    if (pendingApps.length === 0) {
-        queueContainer.innerHTML = '<div class="p-4 text-center text-gray-400">No pending appointments.</div>';
-    } else {
-        pendingApps.forEach(appt => {
-            const item = document.createElement('div');
-            item.className = "p-4 hover:bg-blue-50 flex flex-col md:flex-row justify-between items-start md:items-center transition duration-150 border-b border-gray-100";
-            item.innerHTML = `
-                <div class="mb-2 md:mb-0">
-                    <div class="flex items-center gap-2">
-                        <p class="font-bold text-blue-900 text-lg">${appt.name}</p>
-                        <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-0.5 rounded border border-yellow-300">
-                            ${appt.department || 'N/A'}
-                        </span>
-                    </div>
-                    <p class="text-sm text-gray-500 font-mono">ID: ${appt.studentId}</p>
-                    <p class="text-gray-700 mt-1">Reason: <span class="font-medium">${appt.symptoms}</span></p>
-                    <p class="text-xs text-blue-600 font-semibold mt-1">📅 ${appt.date}</p>
-                </div>
-                <div>
-                    <button onclick="markAsDone(${appt.id})" class="bg-green-500 text-white text-sm font-bold px-4 py-2 rounded shadow hover:bg-green-600 transition">
-                        ✓ Consult & Done
-                    </button>
-                </div>
-            `;
-            queueContainer.appendChild(item);
-        });
-    }
-
-    // Render History (NOW WITH NOTES)
-    historyContainer.innerHTML = '';
-    if (completedApps.length === 0) {
-        historyContainer.innerHTML = '<div class="p-4 text-center text-gray-400">No history available.</div>';
-    } else {
-        completedApps.reverse().forEach(appt => {
-            const item = document.createElement('div');
-            // Added "history-item" class for the search filter
             item.className = "history-item p-4 bg-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-100";
             
             item.innerHTML = `
@@ -234,7 +157,7 @@ function loadDashboard() {
     }
 }
 
-// --- NEW FUNCTION: Search Filter ---
+// 3. Search Filter
 function filterHistory() {
     const input = document.getElementById('searchInput');
     const filter = input.value.toUpperCase();
@@ -242,7 +165,6 @@ function filterHistory() {
     const items = historyContainer.getElementsByClassName('history-item');
 
     for (let i = 0; i < items.length; i++) {
-        // We look at all text inside the history item div
         const textValue = items[i].textContent || items[i].innerText;
         if (textValue.toUpperCase().indexOf(filter) > -1) {
             items[i].style.display = "";
@@ -252,22 +174,112 @@ function filterHistory() {
     }
 }
 
+// 4. Export to CSV Feature
+function exportToCSV() {
+    const appointments = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    
+    if (appointments.length === 0) {
+        alert("No data to export!");
+        return;
+    }
+
+    // Create Header
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "ID,Student Name,Student ID,Department,Symptoms,Status,Date,Notes\n";
+
+    // Add Rows
+    appointments.forEach(row => {
+        // Clean data (remove commas so CSV doesn't break)
+        const cleanName = row.name.replace(/,/g, "");
+        const cleanSymptoms = row.symptoms.replace(/,/g, " ");
+        const cleanNotes = (row.notes || "").replace(/,/g, " ");
+
+        csvContent += `${row.id},${cleanName},${row.studentId},${row.department},${cleanSymptoms},${row.status},${row.date},${cleanNotes}\n`;
+    });
+
+    // Download
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "healthhub_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// 5. Analytics Feature
+function loadAnalytics() {
+    const container = document.getElementById('analyticsContainer');
+    const appointments = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    
+    if (appointments.length === 0) {
+        container.innerHTML = "<p>No data available for analysis.</p>";
+        return;
+    }
+
+    // Count by Department
+    const deptCounts = {};
+    appointments.forEach(appt => {
+        const dept = appt.department || "Unknown";
+        deptCounts[dept] = (deptCounts[dept] || 0) + 1;
+    });
+
+    // Render
+    container.innerHTML = '';
+    const maxVal = Math.max(...Object.values(deptCounts)); 
+
+    for (const [dept, count] of Object.entries(deptCounts)) {
+        const percentage = (count / appointments.length) * 100;
+        
+        const barHTML = `
+            <div>
+                <div class="flex justify-between text-sm font-bold text-gray-700 mb-1">
+                    <span>${dept}</span>
+                    <span>${count} students</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div class="bg-blue-900 h-4 rounded-full transition-all duration-500" style="width: ${percentage}%"></div>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', barHTML);
+    }
+}
+
+// 6. Tab Switching Logic (CORRECT VERSION)
 function switchTab(tabName) {
     const queueSection = document.getElementById('queueSection');
     const historySection = document.getElementById('historySection');
+    const analyticsSection = document.getElementById('analyticsSection');
+
     const tabQueue = document.getElementById('tabQueue');
     const tabHistory = document.getElementById('tabHistory');
+    const tabAnalytics = document.getElementById('tabAnalytics');
 
+    // Hide All
+    queueSection.classList.add('hidden');
+    historySection.classList.add('hidden');
+    if(analyticsSection) analyticsSection.classList.add('hidden');
+
+    // Reset Buttons
+    const inactiveClass = "px-4 py-2 bg-white text-gray-600 rounded-t-lg font-bold shadow hover:bg-gray-50 border-b-2 border-transparent transition";
+    const activeClass = "px-4 py-2 bg-blue-900 text-white rounded-t-lg font-bold shadow border-b-2 border-blue-900 transition";
+
+    tabQueue.className = inactiveClass;
+    tabHistory.className = inactiveClass;
+    if(tabAnalytics) tabAnalytics.className = inactiveClass;
+
+    // Show Selected
     if (tabName === 'queue') {
         queueSection.classList.remove('hidden');
-        historySection.classList.add('hidden');
-        tabQueue.className = "px-4 py-2 bg-blue-900 text-white rounded-t-lg font-bold shadow transition border-b-2 border-blue-900";
-        tabHistory.className = "px-4 py-2 bg-white text-gray-600 rounded-t-lg font-bold shadow hover:bg-gray-50 transition border-b-2 border-transparent";
-    } else {
-        queueSection.classList.add('hidden');
+        tabQueue.className = activeClass;
+    } else if (tabName === 'history') {
         historySection.classList.remove('hidden');
-        tabHistory.className = "px-4 py-2 bg-blue-900 text-white rounded-t-lg font-bold shadow transition border-b-2 border-blue-900";
-        tabQueue.className = "px-4 py-2 bg-white text-gray-600 rounded-t-lg font-bold shadow hover:bg-gray-50 transition border-b-2 border-transparent";
+        tabHistory.className = activeClass;
+    } else if (tabName === 'analytics') {
+        analyticsSection.classList.remove('hidden');
+        tabAnalytics.className = activeClass;
+        loadAnalytics(); 
     }
 }
 
@@ -279,4 +291,4 @@ function saveToStorage(appointment) {
 
 if (document.getElementById('bookingForm')) {
     document.getElementById('bookingForm').addEventListener('submit', handleBooking);
-}
+}c
